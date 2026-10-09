@@ -125,6 +125,8 @@ export interface ResizeOption {
 export interface GridLayoutPlusConfig {
   /** 列数 */
   colNum: number
+  autoArrange?: boolean
+  minH?: number
   /** 行高（像素），用于计算每行的高度 */
   rowHeight: number
   /** 最小行数（可选）：用于控制容器初始/最小高度 = minRows * rowHeight */
@@ -150,9 +152,9 @@ export interface GridLayoutPlusConfig {
   /** 是否响应式 */
   responsive: boolean
   /** 响应式断点 */
-  breakpoints: Record<string, number>
+  breakpoints: Record<string, number> & { lg: number; md: number; sm: number; xs: number; xxs: number }
   /** 不同断点的列数 */
-  cols: Record<string, number>
+  cols: Record<string, number> & { lg: number; md: number; sm: number; xs: number; xxs: number }
   /** 是否防止碰撞 */
   preventCollision: boolean
   /** 是否使用样式光标 */
@@ -220,15 +222,15 @@ export const EXTENDED_GRID_LAYOUT_CONFIG: GridLayoutPlusConfig = {
 
 // 🔥 超大网格工具函数
 export const GridSizePresets = {
-  MINI: { colNum: 12, rowHeight: 100, margin: [10, 10] }, // 12列 - 标准小网格
-  STANDARD: { colNum: 24, rowHeight: 60, margin: [8, 8] }, // 24列 - 标准网格
-  LARGE: { colNum: 50, rowHeight: 40, margin: [5, 5] }, // 50列 - 大网格
-  MEGA: { colNum: 99, rowHeight: 20, margin: [2, 2] }, // 99列 - 超大网格
+  MINI: { colNum: 12, rowHeight: 100, margin: [10, 10] as [number, number] }, // 12列 - 标准小网格
+  STANDARD: { colNum: 24, rowHeight: 60, margin: [8, 8] as [number, number] }, // 24列 - 标准网格
+  LARGE: { colNum: 50, rowHeight: 40, margin: [5, 5] as [number, number] }, // 50列 - 大网格
+  MEGA: { colNum: 99, rowHeight: 20, margin: [2, 2] as [number, number] }, // 99列 - 超大网格
   CUSTOM: (cols: number) => ({
     // 自定义列数
     colNum: Math.max(1, Math.min(99, cols)), // 限制1-99列
     rowHeight: Math.max(20, 100 - cols), // 动态调整行高
-    margin: [Math.max(2, 10 - Math.floor(cols / 10)), Math.max(2, 10 - Math.floor(cols / 10))] // 动态调整边距
+    margin: [Math.max(2, 10 - Math.floor(cols / 10)), Math.max(2, 10 - Math.floor(cols / 10))] as [number, number] // 动态调整边距
   })
 }
 
@@ -256,6 +258,7 @@ export interface GridLayoutPlusProps {
 
 // 组件Emits
 export interface GridLayoutPlusEmits {
+  (e: 'drag-enter' | 'drag-over' | 'drag-leave' | 'drop', event: DragEvent): void
   /** 布局创建 */
   (e: 'layout-created', layout: GridLayoutPlusItem[]): void
   /** 布局挂载前 */
@@ -273,7 +276,7 @@ export interface GridLayoutPlusEmits {
   /** 断点变化 */
   (e: 'breakpoint-changed', breakpoint: string, layout: GridLayoutPlusItem[]): void
   /** 容器大小变化 */
-  (e: 'container-resized', i: string, newH: number, newW: number, newHPx: number, newWPx: number): void
+  (e: 'container-resized', width: number, height: number, cols: number): void
   /** 项目调整大小中 */
   (e: 'item-resize', i: string, newH: number, newW: number, newHPx: number, newWPx: number): void
   /** 项目调整大小完成 */
@@ -369,6 +372,8 @@ export const DARK_THEME: GridTheme = {
 
 // 性能配置
 export interface PerformanceConfig {
+  enableVirtualization?: boolean
+  virtualizationThreshold?: number
   /** 防抖延迟 */
   debounceDelay: number
   /** 节流延迟 */

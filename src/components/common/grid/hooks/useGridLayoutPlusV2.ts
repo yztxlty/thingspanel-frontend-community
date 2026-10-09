@@ -3,13 +3,8 @@
  * 采用模块化架构，集成所有网格功能
  */
 
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import type {
-  GridLayoutPlusItem,
-  GridLayoutPlusConfig,
-  PerformanceConfig,
-  ResponsiveLayout
-} from '../gridLayoutPlusTypes'
+import { computed, watch, onMounted, onUnmounted } from 'vue'
+import type { GridLayoutPlusItem, GridLayoutPlusConfig } from '../gridLayoutPlusTypes'
 import { useGridCore, type UseGridCoreOptions } from './useGridCore'
 import { useGridHistory, type UseGridHistoryOptions } from './useGridHistory'
 import { useGridPerformance, type UseGridPerformanceOptions } from './useGridPerformance'

@@ -47,7 +47,7 @@
         @item-resize="handleItemResize"
         @breakpoint-changed="handleBreakpointChange"
       >
-        <template #default="{ item, readonly }">
+        <template #default="{ item }">
           <div class="custom-item-content">
             <div v-if="!readonly" class="item-drag-handle">
               <n-icon :size="16">
@@ -102,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { NButton, NSpace, NCard, NStatistic, NIcon, NUpload, useMessage } from 'naive-ui'
 import { Menu } from '@vicons/ionicons5'
 import {
@@ -157,25 +157,7 @@ const gridConfig: Partial<GridLayoutPlusConfig> = {
 }
 
 // 使用Grid Layout Plus Hook
-const {
-  layout,
-  selectedItems,
-  layoutStats,
-  canUndo,
-  canRedo,
-  hasSelectedItems,
-  addItem,
-  removeItem,
-  clearLayout,
-  selectAllItems,
-  clearSelection,
-  deleteSelectedItems,
-  compactCurrentLayout,
-  undo,
-  redo,
-  exportCurrentLayout,
-  importLayout: importLayoutFromHook
-} = useGridLayoutPlus({
+const { layout, selectedItems, layoutStats, canUndo, canRedo, hasSelectedItems, addItem, clearLayout, selectAllItems, clearSelection, deleteSelectedItems, compactCurrentLayout, undo, redo, exportCurrentLayout, importLayout: importLayoutFromHook } = useGridLayoutPlus({
   initialLayout,
   config: gridConfig,
   enableHistory: true,
@@ -202,7 +184,7 @@ const addRandomItem = () => {
   if (result.success) {
     message.success('项目添加成功')
   } else {
-    message.error(result.message)
+    message.error(result.message || '操作失败')
   }
 }
 
@@ -234,7 +216,7 @@ const selectAll = () => {
 const deleteSelected = () => {
   const result = deleteSelectedItems()
   if (result.success) {
-    message.success(result.message)
+    message.success(result.message || '操作成功')
   }
 }
 
@@ -262,7 +244,7 @@ const importLayout = (options: any) => {
       if (result.success) {
         message.success('布局导入成功')
       } else {
-        message.error(result.message)
+        message.error(result.message || '操作失败')
       }
     } catch (error) {
       message.error('布局导入失败')

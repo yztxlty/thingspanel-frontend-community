@@ -16,7 +16,7 @@ export interface Props {
   type?: 'add' | 'edit';
   /** 编辑的表格行数据 */
   editData?: UpgradeTaskDetail | null;
-  selectedKeys: string[];
+  selectedKeys?: string[];
 }
 
 export type ModalType = NonNullable<Props['type']>;
@@ -45,7 +45,7 @@ const modalVisible = computed({
   }
 });
 
-// (e: 'update:selectedKeys', selectedKeys: string[]): void;
+// (e: 'update:selectedKeys', selectedKeys?: string[]): void;
 
 const title = computed(() => {
   const titles: Record<ModalType, string> = {

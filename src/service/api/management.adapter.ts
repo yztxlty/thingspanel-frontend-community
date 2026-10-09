@@ -1,4 +1,3 @@
-import type { ElegantRoute } from '@elegant-router/types'
 import type { ElegantConstRoute } from '@elegant-router/vue'
 import { layouts, views } from '@/router/elegant/imports'
 import { getRouteName } from '@/router/elegant/transform'
@@ -192,7 +191,7 @@ function getRouteComponent(item: Api.Route.MenuRoute) {
   )
 }
 
-function createHomeDefaultChild(item: Api.Route.MenuRoute): ElegantRoute {
+function createHomeDefaultChild(item: Api.Route.MenuRoute): ElegantConstRoute {
   return {
     name: 'home_overview',
     path: '',
@@ -209,18 +208,18 @@ function createHomeDefaultChild(item: Api.Route.MenuRoute): ElegantRoute {
       activeMenu: 'home',
       remark: item.remark || ''
     }
-  } as unknown as ElegantRoute
+  }
 }
 
 /** 递归转换后端菜单数据为前端路由 */
-function replaceKeys(data: ElegantConstRoute[]): ElegantRoute[] {
-  return data.flatMap((item: any): ElegantRoute[] => {
+function replaceKeys(data: ElegantConstRoute[]): ElegantConstRoute[] {
+  return data.flatMap((item: any): ElegantConstRoute[] => {
     const component = getRouteComponent(item)
     const children = item.children?.length ? replaceKeys(item.children) : []
     const elementCode = item.element_code.trim().replace(/\s/g, '_')
     const path = ROUTE_DISPLAY_PATH_MAP[elementCode] ?? normalizePath(item.param1)
 
-    const route: Partial<ElegantRoute> = {
+    const route: ElegantConstRoute = {
       name: elementCode,
       path,
       ...(component && { component }),
@@ -255,7 +254,7 @@ function replaceKeys(data: ElegantConstRoute[]): ElegantRoute[] {
       return []
     }
 
-    return [route as ElegantRoute]
+    return [route as ElegantConstRoute]
   })
 }
 

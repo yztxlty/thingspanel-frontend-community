@@ -21,10 +21,10 @@ enum SourceType {
 
 export interface Props {
   /** 选取文件的类型 */
-  accept: string;
+  accept?: string;
   text?: string;
   /** 上传的文件类型 */
-  fileType: string[];
+  fileType?: string[];
   value: string | null | undefined;
   sourceType?: string;
   extraData?: Record<string, string>;

@@ -8,27 +8,9 @@
  * 3. 安装中 (显示进度)
  * 4. 结果 (显示安装结果)
  */
-import { ref, computed, reactive, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  NModal,
-  NCard,
-  NAlert,
-  NButton,
-  NSpin,
-  NSteps,
-  NStep,
-  NProgress,
-  NSpace,
-  NGrid,
-  NGi,
-  NTag,
-  NIcon,
-  NEmpty,
-  NTooltip,
-  useMessage,
-  useDialog
-} from 'naive-ui'
+import { NModal, NCard, NAlert, NButton, NSpin, NSteps, NStep, NSpace, NTag, NIcon, useMessage, useDialog } from 'naive-ui'
 import {
   CloudDownloadOutline,
   CheckmarkCircleOutline,
@@ -43,7 +25,6 @@ import {
   installBundle,
   pollInstallationStatus,
   getInstallationDetail,
-  getBundlePrecheckInfo,
   type MarketBundleDetail,
   type InstallResult,
   getErrorDisplayMessage,
@@ -74,14 +55,6 @@ export interface InstallParams {
 /** 安装向导步骤 */
 type WizardStep = 'confirm' | 'binding' | 'installing' | 'result'
 
-/** 安装状态信息 */
-interface StatusInfo {
-  label: string
-  description?: string
-  progress: number
-  status: 'pending' | 'processing' | 'completed' | 'failed'
-}
-
 // ========== Props & Emits ==========
 
 const props = defineProps<{
@@ -99,7 +72,7 @@ const emit = defineEmits<{
 
 const router = useRouter()
 const message = useMessage()
-const dialog = useDialog()
+useDialog()
 const { getToken, clearToken } = useMarketAuth()
 
 // ========== Local State ==========
@@ -138,9 +111,6 @@ const installError = ref<MarketApiError | null>(null)
 /** 轮询定时器 */
 let pollTimer: ReturnType<typeof setTimeout> | null = null
 
-/** 预检信息加载中 */
-const isLoadingPrecheck = ref(false)
-
 // ========== Computed ==========
 
 /** 步骤索引 */
@@ -155,51 +125,12 @@ const currentVersionInfo = computed(() => {
   return bundleDetail.value.versions.find(v => v.version === selectedVersion.value)
 })
 
-/** 安装状态列表 */
-const installStatusList = computed((): StatusInfo[] => {
-  return [
-    {
-      label: $t('market.install.status.downloading'),
-      description: $t('market.install.status.downloadingDesc'),
-      progress: 0,
-      status: 'pending'
-    },
-    {
-      label: $t('market.install.status.verifying'),
-      description: $t('market.install.status.verifyingDesc'),
-      progress: 0,
-      status: 'pending'
-    },
-    {
-      label: $t('market.install.status.installingModels'),
-      description: $t('market.install.status.installingModelsDesc'),
-      progress: 0,
-      status: 'pending'
-    },
-    {
-      label: $t('market.install.status.creatingDashboards'),
-      description: $t('market.install.status.creatingDashboardsDesc'),
-      progress: 0,
-      status: 'pending'
-    }
-  ]
-})
-
 /** 是否显示绑定步骤 */
 const hasBindings = computed(() => {
   return dashboardBindings.value.some(d => d.bindings.length > 0)
 })
 
 const bindingDefinitions = computed(() => dashboardBindings.value.flatMap(dashboard => dashboard.bindings))
-
-/** 看板列表 */
-const dashboardList = computed(() => {
-  return dashboardBindings.value.map(d => ({
-    key: d.dashboardKey,
-    name: d.dashboardName,
-    bindingCount: d.bindings.length
-  }))
-})
 
 const installedDeviceTemplates = computed(
   () => installResult.value?.resourceMappings?.filter(item => item.resourceType === 'device_template') ?? []
@@ -259,31 +190,6 @@ function resetState() {
   isInstalling.value = false
   installResult.value = null
   installError.value = null
-}
-
-/**
- * 加载预检信息
- */
-async function loadPrecheckInfo() {
-  if (!bundleDetail.value) return
-
-  isLoadingPrecheck.value = true
-  try {
-    const result = await getBundlePrecheckInfo(bundleDetail.value.bundleKey, {
-      version: selectedVersion.value
-    })
-
-    if (result.data) {
-      // 更新绑定预览
-      if (result.data.bindingPreview) {
-        dashboardBindings.value = result.data.bindingPreview
-      }
-    }
-  } catch (err) {
-    console.error('Failed to load precheck info:', err)
-  } finally {
-    isLoadingPrecheck.value = false
-  }
 }
 
 /**

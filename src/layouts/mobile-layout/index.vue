@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { NButton, NIcon } from 'naive-ui'
+import { useRoute } from 'vue-router'
 import { LAYOUT_SCROLL_EL_ID } from '@sa/materials'
-import { useAppStore } from '@/store/modules/app'
 import { useRouteStore } from '@/store/modules/route'
 import { useRouterPush } from '@/hooks/common/router'
 import GlobalContent from '../modules/global-content/index.vue'
@@ -13,7 +12,6 @@ defineOptions({
   name: 'MobileLayout'
 })
 
-const appStore = useAppStore()
 const routeStore = useRouteStore()
 const { routerPushByKey } = useRouterPush()
 
@@ -26,18 +24,12 @@ const mobileMenus = computed(() => {
   return mainMenus.slice(0, 4) // 最多显示4个主要菜单
 })
 
-const currentRoute = computed(() => routeStore.currentRoute)
+const currentRoute = useRoute()
 
-function handleMenuClick(menu: any) {
+function handleMenuClick(menu: App.Global.Menu) {
   routerPushByKey(menu.routeKey)
 }
 
-// 获取图标组件
-function getIconComponent(iconString: string) {
-  // 这里可以根据图标字符串返回对应的图标组件
-  // 简化处理，直接返回图标字符串
-  return iconString
-}
 </script>
 
 <template>
@@ -67,7 +59,7 @@ function getIconComponent(iconString: string) {
           @click="handleMenuClick(menu)"
         >
           <div class="nav-icon">
-            <NIcon :component="getIconComponent(menu.icon)" />
+            <component :is="menu.icon" v-if="menu.icon" />
           </div>
           <span class="nav-text">{{ menu.label }}</span>
         </div>
@@ -151,5 +143,4 @@ function getIconComponent(iconString: string) {
     @apply bg-container border-border-dark;
   }
 }
-</style>
 </style>

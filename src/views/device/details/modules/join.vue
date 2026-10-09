@@ -56,13 +56,13 @@ const getFormJson = async () => {
 
   formElements.value = res.data
 }
-const connectInfo = ref<object>({})
+const connectInfo = ref<{ id?: string; service_type?: string; name?: string; service_identifier?: string }>({})
 const feachConnectInfo = async () => {
   const res = await getDeviceConnectInfo({ device_id: props.id })
   connectInfo.value = res.data
 }
 
-const pluginInfo = ref<object>({})
+const pluginInfo = ref<{ id?: string; service_type?: string; name?: string; service_identifier?: string }>({})
 const getPlugininfoByServiceReq = async str => {
   const { error, data } = await getPlugininfoByService(str)
   if (!error) {

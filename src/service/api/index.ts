@@ -12,3 +12,5 @@ export * from './irrigation'
 export * from './plugin'
 export * from './apikey'
 export * from './dashboard-menu'
+
+export { deviceTemplate } from './device-template-model'

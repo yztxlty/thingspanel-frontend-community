@@ -24,15 +24,6 @@ export interface ApiLatestTelemetryResponse {
   error: string | object | null // 允许不同的错误类型
 }
 
-// Reintroduce the interface for the expected API response structure
-interface ApiResponse<T> {
-  code: number
-  message: string
-  data: T
-}
-
-// --- 接口定义结束 ---
-
 // --- 定义 /board/tenant 返回的 data 类型 ---
 interface TenantMonthData {
   mon: number
@@ -65,7 +56,7 @@ export const tenantNum = async (): Promise<any> => {
 
 /** 获取租户总数、昨日新增、本月新增以及月历史数据 */
 export const tenant = async () => {
-  const data = await request.get<Api.BaseApi.Data | null>('/board/tenant')
+  const data = await request.get<TenantBoardData | null>('/board/tenant')
   return data
 }
 
@@ -88,9 +79,14 @@ export const getTemplat = async (id: any) => {
   return data
 }
 
+interface DeviceModelPage {
+  list: Record<string, unknown>[]
+  total: number
+}
+
 /** 获取遥测数据 */
 export const telemetryApi = async (params: any) => {
-  const data = await request.get<Api.BaseApi.Data | null>('/device/model/telemetry', { params })
+  const data = await request.get<DeviceModelPage | null>('/device/model/telemetry', { params })
   return data
 }
 /** 获取遥测数据 */
@@ -110,19 +106,19 @@ export const getLatestTelemetryData = async () => {
 
 /** 获取属性数据 */
 export const attributesApi = async (params: any) => {
-  const data = await request.get<Api.BaseApi.Data | null>('/device/model/attributes', { params })
+  const data = await request.get<DeviceModelPage | null>('/device/model/attributes', { params })
   return data
 }
 
 /** 获取事件数据 */
 export const eventsApi = async (params: any) => {
-  const data = await request.get<Api.BaseApi.Data | null>('/device/model/events', { params })
+  const data = await request.get<DeviceModelPage | null>('/device/model/events', { params })
   return data
 }
 
 /** 获取命令数据 */
 export const commandsApi = async (params: any) => {
-  const data = await request.get<Api.BaseApi.Data | null>('/device/model/commands', { params })
+  const data = await request.get<DeviceModelPage | null>('/device/model/commands', { params })
   return data
 }
 

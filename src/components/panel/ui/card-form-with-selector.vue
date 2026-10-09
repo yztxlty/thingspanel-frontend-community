@@ -47,7 +47,7 @@
                 >
                   <h4 class="text-lg font-medium mb-3">设备 {{ i + 1 }}</h4>
                   <DeviceMetricsSelector
-                    v-model="item"
+                    v-model="state.data.dataSource.deviceSource[i]"
                     :device-options="deviceOption"
                     :disabled="props?.deviceWebChartConfig?.length !== 0"
                     :show-aggregate-function="state.data.dataSource.isSupportAggregate"
@@ -99,7 +99,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import type { SelectOption } from 'naive-ui'
 import { usePanelStore } from '@/store/modules/panel'
 import ConfigCtx from '@/components/panel/ui/config-ctx.vue'
-import DeviceMetricsSelector from '@/components/DeviceMetricsSelector.vue'
+import DeviceMetricsSelector from '@/components/device-selectors/DeviceMetricsSelector.vue'
 import type { ICardData, ICardDefine } from '@/components/panel/card'
 import { $t } from '@/locales'
 
@@ -163,7 +163,7 @@ const state = reactive({
   data: copy(defData)
 })
 
-const deviceOption = ref<SelectOption[]>([])
+const deviceOption = ref<{ id: string; name: string }[]>([])
 const deviceCount = ref()
 
 const findCard = (id: string) => {

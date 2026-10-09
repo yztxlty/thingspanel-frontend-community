@@ -546,7 +546,7 @@ onMounted(async () => {
                 >
                   <img
                     v-if="dashboard.thumbnail"
-                    :src="getThumbnailUrl(dashboard.thumbnail)"
+                    :src="getThumbnailUrl(dashboard.thumbnail) || undefined"
                     class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     alt="thumbnail"
                   />

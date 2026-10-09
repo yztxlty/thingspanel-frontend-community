@@ -4,27 +4,8 @@ import { getWebsocketServerUrl } from '@/utils/common/tool'
 
 const wsUrl = `${getWebsocketServerUrl()}/telemetry/datas/current/keys/ws`
 
-export interface ICardView {
-  // 定义 ICardView 接口
-  data?: {
-    dataSource?: {
-      deviceSource?: {
-        deviceId?: string
-        metricsId?: string
-        metricsType?: string
-      }[]
-    }
-    type?: string
-  }
-}
-
-export interface ICardRender {
-  getCardComponent: (cardView: ICardView) => {
-    getComponent: () => {
-      updateData?: (deviceId: string, metricsId: string, data: any) => void
-    }
-  }
-}
+import type { ICardView, ICardRender } from '@/components/panel/card'
+export type { ICardView, ICardRender } from '@/components/panel/card'
 
 export function useWebsocketUtil(cr: Ref<ICardRender | undefined>, token: string | string[]) {
   const socketMap = new Map<string, WebSocket>() // from device id to socket
@@ -104,7 +85,7 @@ export function useWebsocketUtil(cr: Ref<ICardRender | undefined>, token: string
       if (!socketMap.has(deviceMetricsId)) {
         if (process.env.NODE_ENV === 'development') {
         }
-        const { ws, send, close, status } = useWebSocket(wsUrl, {
+        const { send, close, status } = useWebSocket(wsUrl, {
           autoReconnect: {
             retries: 3,
             delay: 1000,

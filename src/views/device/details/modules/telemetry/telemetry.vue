@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { computed, getCurrentInstance, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import type { NumberAnimationInst } from 'naive-ui'
-import dayjs from 'dayjs'
+
 import { Activity } from '@vicons/tabler'
 import { DocumentOnePage24Regular } from '@vicons/fluent'
 import { useWebSocket } from '@vueuse/core'
@@ -328,12 +328,7 @@ const handleSelect = (key, item) => {
     handleDeleteTable()
   }
 }
-const copy = event => {
-  const input = event.target
-  input.select()
-  document.execCommand('copy')
-  window.$message?.success($t('theme.configOperation.copySuccess'))
-}
+
 const handlePositiveClick = async () => {
   if (isJSON(formValue.value)) {
     let res: any = {}

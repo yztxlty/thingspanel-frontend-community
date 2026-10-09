@@ -182,7 +182,7 @@ export type * from './shared'
 export function createFlatRequest<ResponseData = any>(
   axiosConfig?: CreateAxiosDefaults,
   options?: Partial<RequestOption<ResponseData>>
-) {
+): FlatRequestInstance {
   const { instance, opts, cancelRequest, cancelAllRequest } = createCommonRequest<ResponseData>(axiosConfig, options)
   // 确保在请求拦截器中移除所有null值的字段
 
@@ -220,7 +220,9 @@ export function createFlatRequest<ResponseData = any>(
       }
 
       return Promise.resolve({ data: response.data as MappedType<R, T>, error: null })
-    } catch (error) {
+    } catch (cause) {
+      const error = axios.isAxiosError<{ message?: string; msg?: string }>(cause) ? cause :
+        new AxiosError<{ message?: string; msg?: string }>(cause instanceof Error ? cause.message : '请求失败')
       // 如果是后端业务错误，应该将错误信息放在error字段中
       if (error?.response?.data && typeof error.response.data === 'object') {
         return Promise.reject({
@@ -284,3 +286,5 @@ export function createFlatRequest<ResponseData = any>(
 }
 
 export type { CreateAxiosDefaults, AxiosError }
+
+export type { FlatRequestInstance } from "./type"

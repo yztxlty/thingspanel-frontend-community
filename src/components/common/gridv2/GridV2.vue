@@ -30,7 +30,7 @@
 import 'gridstack/dist/dd-gridstack'
 import 'gridstack/dist/gridstack.min.css'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { GridStack, type GridItemHTMLElement, type GridStackNode, type GridStackOptions } from 'gridstack'
+import { GridStack, type GridStackNode, type GridStackOptions } from 'gridstack'
 import type {
   GridLayoutPlusConfig,
   GridLayoutPlusEmits,
@@ -71,7 +71,7 @@ const gridStyle = computed(() => {
 })
 
 function itemKey(item: GridLayoutPlusItem): string {
-  const raw = (item as Record<string, unknown>)[idKey.value]
+  const raw = (item as unknown as Record<string, unknown>)[idKey.value]
   if (raw !== undefined && raw !== null && raw !== '') return String(raw)
   if (item.i !== undefined) return String(item.i)
   return ''
@@ -156,7 +156,8 @@ function createOptions(resolved: ReturnType<typeof resolveConfig>): GridStackOpt
 
 function ensureColumnStyles(column: number): void {
   if (column <= 12 || injectedColumns.has(column)) return
-  const css = GridStack.generateStyles?.(column)
+  const css: unknown = 'generateStyles' in GridStack && typeof GridStack.generateStyles === 'function'
+    ? GridStack.generateStyles(column) : undefined
   let text = Array.isArray(css) ? css.join('\n') : typeof css === 'string' ? css : ''
   if (!text || !text.trim()) {
     const lines: string[] = []
@@ -196,7 +197,7 @@ function runAutoArrange(): void {
   isAutoArranging = true
   try {
     grid.batchUpdate()
-    grid.compact(true)
+    grid.compact('compact', true)
     grid.batchUpdate(false)
   } finally {
     isAutoArranging = false
@@ -343,7 +344,7 @@ function collectLayoutFromGrid(): GridLayoutPlusItem[] {
         w: node.w ?? 1,
         h: node.h ?? 1
       }
-      if (idKey.value !== 'i') (item as Record<string, unknown>)[idKey.value] = id
+      if (idKey.value !== 'i') (item as unknown as Record<string, unknown>)[idKey.value] = id
       if (node.minW) item.minW = node.minW
       if (node.minH) item.minH = node.minH
       if (node.maxW) item.maxW = node.maxW

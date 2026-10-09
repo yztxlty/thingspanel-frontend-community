@@ -232,11 +232,6 @@ const initializeView = () => {
   }
 }
 
-const handleReset = () => {
-  // 触发重置事件，父组件负责清空表单和刷新数据
-  emit('reset')
-}
-
 const handleAddNew = () => {
   emit('add-new')
 }

@@ -1,10 +1,11 @@
 <script setup lang="tsx">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { NModal, NButton } from 'naive-ui'
 import { $t } from '@/locales'
 import { getTemplat, putTemplat } from '@/service/api'
 import ThingsVisWidget from '@/components/thingsvis/ThingsVisWidget.vue'
 import type { PlatformField } from '@/utils/thingsvis/types'
+import { extractPlatformFields } from '@/utils/thingsvis/platform-fields'
 import {
   buildPresetEditorConfig,
   extractFirstNodeFromWidgetConfig,
@@ -50,14 +51,9 @@ const loadPresetData = async () => {
     const res = await getTemplat(props.deviceTemplateId)
     if (res.data) {
       // 1. Prepare platform fields (only showing the current property)
-      platformFields.value = [
-        {
-          id: props.property.identifier,
-          name: props.property.name,
-          dataType: props.propertyType,
-          unit: props.property.unit
-        }
-      ]
+      platformFields.value = extractPlatformFields({
+        [props.propertyType]: [{ ...props.property, data_type: props.property.dataType }]
+      })
 
       // 2. Parse existing config
       const presetArr = getTemplatePresetEntries(

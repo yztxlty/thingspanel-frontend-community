@@ -26,7 +26,7 @@ interface Created {
 }
 
 const props = defineProps<Created>()
-const selectedOption = ref({
+const selectedOption = ref<{ device_id: string; key: string; aggregate_window: string; time_range: string; start_time?: number; end_time?: number; aggregate_function?: string }>({
   device_id: props.deviceId,
   key: props.theKey,
   aggregate_window: 'no_aggregate',
@@ -327,10 +327,10 @@ watch(
         data.forEach(item => {
           if (item.y) {
             sumValue += item.y
-            if (item.y < minValue.value) {
+            if (minValue.value !== undefined && item.y < minValue.value) {
               minValue.value = item.y
             }
-            if (item.y > maxValue.value) {
+            if (maxValue.value !== undefined && item.y > maxValue.value) {
               maxValue.value = item.y
             }
           }

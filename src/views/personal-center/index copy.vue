@@ -32,6 +32,7 @@ const editType = ref(false)
 const header = ref(false)
 const headUrl = ref('')
 const userInfoData = ref({
+  authority: '',
   additional_info: '',
   name: '',
   email: '',
@@ -127,7 +128,7 @@ const resetPass = async () => {
 /** 修改密码 */
 const submitPass = async () => {
   await validate()
-  const data = localStorage.getItem('enableZcAndYzm') ? JSON.parse(localStorage.getItem('enableZcAndYzm')) : []
+  const data = JSON.parse(localStorage.getItem('enableZcAndYzm') || '[]')
   let salt: any = null
   let password1 = formData.value.password
   if (data.find(v => v.name === 'frontend_res')?.enable_flag === 'enable') {
@@ -184,7 +185,7 @@ onMounted(async () => {
         :data="{
           type: 'user_icon'
         }"
-        @finish="handleFinish"
+        @finish="options => { void handleFinish(options) }"
       >
         <div style="">
           <SvgIcon v-if="!header" local-icon="avatar" style="width: 80px; height: 80px" />

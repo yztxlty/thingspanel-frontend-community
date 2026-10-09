@@ -7,7 +7,6 @@ import type { LayoutMode } from '@sa/materials'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { useAppStore } from '@/store/modules/app'
 import { useThemeStore } from '@/store/modules/theme'
-import { useRouteStore } from '@/store/modules/route'
 import { localStg } from '@/utils/storage'
 import { useRouterPush } from '@/hooks/common/router'
 import { useRouter, useRoute } from 'vue-router'
@@ -32,7 +31,6 @@ defineOptions({
 
 const appStore = useAppStore()
 const themeStore = useThemeStore()
-const routeStore = useRouteStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -440,7 +438,7 @@ onMounted(() => {
  * 确保用户离开或组件销毁时正确清理资源
  */
 onUnmounted(() => {
-  // cleanupEventSource()
+  cleanupEventSource()
 })
 </script>
 

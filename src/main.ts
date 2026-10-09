@@ -17,12 +17,12 @@ const MAX_RECENT_ROUTES = 8
 const excludedPaths = ['/login/*', '/404', '/home']
 
 // 防抖函数 - 减少频繁的 localStorage 操作
-function debounce<T extends () => any>(func: T, wait: number): T {
+function debounce<Args extends unknown[]>(func: (...args: Args) => void, wait: number): (...args: Args) => void {
   let timeout: NodeJS.Timeout | null = null
-  return ((...args: any[]) => {
+  return (...args: Args) => {
     if (timeout) clearTimeout(timeout)
     timeout = setTimeout(() => func(...args), wait)
-  }) as T
+  }
 }
 
 // 内存缓存最近访问的路由，减少 localStorage 读取

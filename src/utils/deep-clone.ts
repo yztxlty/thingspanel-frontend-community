@@ -164,7 +164,7 @@ export const batchDeepClone = <T>(items: T[]): T[] => {
     return structuredClone(rawItems)
   } catch {
     // 降级到单个处理
-    return items.map(smartDeepClone)
+    return items.map(item => smartDeepClone(item))
   }
 }
 

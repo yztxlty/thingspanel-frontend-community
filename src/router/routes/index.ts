@@ -1,4 +1,4 @@
-import type { CustomRoute, ElegantConstRoute, ElegantRoute } from '@elegant-router/types'
+import type { CustomRoute, ElegantConstRoute } from '@elegant-router/types'
 import type { RouteComponent } from 'vue-router'
 import { generatedRoutes } from '../elegant/routes'
 import { layouts, views } from '../elegant/imports'
@@ -21,7 +21,7 @@ export const ROOT_ROUTE: CustomRoute = {
   }
 }
 
-const customRoutes: CustomRoute[] = [
+const customRoutes: ElegantConstRoute[] = [
   ROOT_ROUTE,
   {
     name: 'device-config-legacy-redirect',
@@ -127,8 +127,7 @@ const customRoutes: CustomRoute[] = [
 ]
 
 // ThingsVis 预览页面 - 独立的常量路由，无需登录
-// 使用 as any 绕过类型检查，因为这是新增的路由
-function createThingsvisPreviewRoute() {
+function createThingsvisPreviewRoute(): ElegantConstRoute {
   return {
     name: 'thingsvis-preview-standalone',
     path: '/tv-preview',
@@ -137,14 +136,14 @@ function createThingsvisPreviewRoute() {
       title: 'thingsvis-preview',
       constant: true
     }
-  } as any
+  }
 }
 
 /** Create routes */
 export function createRoutes() {
-  const constantRoutes: ElegantRoute[] = []
+  const constantRoutes: ElegantConstRoute[] = []
 
-  const authRoutes: ElegantRoute[] = []
+  const authRoutes: ElegantConstRoute[] = []
 
   const appEmbedRouteNames = new Set(['visualization-app', 'visualization-app-dashboards', 'visualization-app-preview'])
 

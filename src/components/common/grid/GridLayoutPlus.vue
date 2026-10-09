@@ -193,35 +193,6 @@ const gridValidation = computed(() => {
   }
 })
 
-// 业务方法
-const handleItemEdit = (item: GridLayoutPlusItem) => {
-  emit('item-edit', withIdKey([item])[0])
-}
-
-const handleItemDelete = (item: GridLayoutPlusItem) => {
-  // 通过 GridCore 组件处理删除逻辑
-  const coreLayout = gridCoreRef.value?.internalLayout
-  if (coreLayout) {
-    const index = coreLayout.findIndex(i => i.i === item.i)
-    if (index > -1) {
-      coreLayout.splice(index, 1)
-      emit('item-delete', item.i)
-    }
-  }
-}
-
-const handleItemDataUpdate = (itemId: string, data: any) => {
-  // 通过 GridCore 组件处理数据更新
-  const coreLayout = gridCoreRef.value?.internalLayout
-  if (coreLayout) {
-    const item = coreLayout.find(i => i.i === itemId)
-    if (item) {
-      item.data = { ...item.data, ...data }
-      emit('item-data-update', itemId, data)
-    }
-  }
-}
-
 // Grid Layout Plus 事件处理
 const handleLayoutCreated = (newLayout: GridLayoutPlusItem[]) => {
   // 统一对外布局协议：补齐 idKey 别名字段

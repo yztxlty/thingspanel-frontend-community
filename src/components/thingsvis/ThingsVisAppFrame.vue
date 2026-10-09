@@ -1811,13 +1811,6 @@ async function buildFallbackPlatformDevicesForDefaultGroup(
   return mapPlatformDevicesForGroup(rawDevices, normalizedGroupId, groupName, groups)
 }
 
-async function buildUngroupedPlatformDevices(): Promise<PlatformDeviceEntry[]> {
-  const deviceRes = await deviceList({ page: 1, page_size: EDITOR_GROUP_DEVICE_PAGE_SIZE })
-  const rawDevices = unwrapList(deviceRes?.data)
-
-  return mapPlatformDevicesForGroup(rawDevices, '', '')
-}
-
 async function buildPlatformDeviceById(deviceId: string): Promise<PlatformDeviceEntry | null> {
   const normalizedDeviceId = firstString(deviceId)
   if (!normalizedDeviceId) return null
@@ -1925,7 +1918,7 @@ async function doInit(): Promise<boolean> {
   let dashboardPayload: Record<string, unknown> = { meta: { id: props.id } }
 
   try {
-    const dashboardData = hasCompleteDashboardSchema(props.schema)
+    const dashboardData = props.schema && hasCompleteDashboardSchema(props.schema)
       ? {
           id: props.schema.id || props.id,
           name: props.schema.name,
@@ -2282,7 +2275,7 @@ const handleMessage = async (event: MessageEvent) => {
         fields: Array.isArray(entry.fields) ? entry.fields : []
       })
     } catch (error) {
-      console.warn('[AppFrame] Failed to load requested device fields:', deviceId, templateId, error)
+      console.warn('[AppFrame] Failed to load requested device fields:', deviceId, error)
     }
     return
   }

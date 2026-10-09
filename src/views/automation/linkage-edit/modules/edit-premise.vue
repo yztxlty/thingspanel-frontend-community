@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, onBeforeUpdate, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { NButton, NFlex, useMessage } from 'naive-ui'
+import { NButton, NFlex } from 'naive-ui'
 import type { FormInst } from 'naive-ui'
 import { IosAlert, IosRefresh } from '@vicons/ionicons4'
 import { deviceGroupTree } from '@/service/api'
@@ -429,27 +429,6 @@ const statusData = computed(() => ({
   ]
 }))
 
-const message = useMessage()
-
-// 动作值标识
-const actionValueChange = (ifItem: any) => {
-  if (ifItem.trigger_param_type === 'event') {
-    try {
-      JSON.parse(ifItem.trigger_value)
-      if (typeof JSON.parse(ifItem.trigger_value) === 'object') {
-        ifItem.inputFeedback = ''
-        ifItem.inputValidationStatus = undefined
-      } else {
-        message.error($t('common.enterJson'))
-        ifItem.inputValidationStatus = 'error'
-      }
-    } catch (e) {
-      message.error($t('common.enterJson'))
-      ifItem.inputValidationStatus = 'error'
-    }
-  }
-}
-
 // 时间条件类型下选项2使用的下拉
 const getTimeConditionOptions = ifGroup => {
   return [
@@ -596,11 +575,11 @@ const determineOptions = computed(() => [
 const eventExistsOptions = computed(() => [
   {
     label: '存在',
-    value: true
+    value: 'true'
   },
   {
     label: '不存在',
-    value: false
+    value: 'false'
   }
 ])
 
@@ -1192,7 +1171,11 @@ watch(locale, () => {
                         </NFormItem>
                         <template v-if="condition.operator === 'exists'">
                           <NFormItem :show-label="false" class="max-w-30 w-full">
-                            <NSelect v-model:value="condition.value" :options="eventExistsOptions" />
+                            <NSelect
+                              :value="condition.value == null ? null : String(condition.value)"
+                              :options="eventExistsOptions"
+                              @update:value="value => { condition.value = value === 'true' }"
+                            />
                           </NFormItem>
                         </template>
                         <template v-else-if="condition.operator === 'between'">

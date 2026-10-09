@@ -1,9 +1,13 @@
+import type { DefineLocaleMessage } from 'vue-i18n'
+
+export type Locale = App.I18n.LangType
+
 // 使用 import.meta.globEager 替代大量 import
 // 这可以提高性能，并使代码更简洁
-const modules = import.meta.glob('./langs/**/*.json', { eager: true })
+const modules = import.meta.glob<{ default: DefineLocaleMessage }>('./langs/**/*.json', { eager: true })
 
-function getLangMessages(modules: Record<string, any>, lang: 'zh-cn' | 'en-us') {
-  const messages: Record<string, any> = {}
+function getLangMessages(modules: Record<string, { default: DefineLocaleMessage }>, lang: 'zh-cn' | 'en-us') {
+  const messages: DefineLocaleMessage = {}
   const prefix = `./langs/${lang}/`
 
   for (const path in modules) {
@@ -52,9 +56,9 @@ function getLangMessages(modules: Record<string, any>, lang: 'zh-cn' | 'en-us') 
   return messages
 }
 
-const locales: Record<I18n.LangType, I18n.Schema> = {
-  'zh-CN': getLangMessages(modules, 'zh-cn') as unknown as I18n.Schema,
-  'en-US': getLangMessages(modules, 'en-us') as unknown as I18n.Schema
+const locales: Record<Locale, DefineLocaleMessage> = {
+  'zh-CN': getLangMessages(modules, 'zh-cn'),
+  'en-US': getLangMessages(modules, 'en-us')
 }
 
 export default locales

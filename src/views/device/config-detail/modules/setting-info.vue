@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, getCurrentInstance, onMounted, reactive, ref, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue'
 import { NButton, useDialog, useMessage } from 'naive-ui'
 import { useRoute } from 'vue-router'
 import ClipboardJS from 'clipboard'
@@ -131,11 +131,7 @@ const copyOneTypeOneSecretDevicePassword = () => {
     container: document.body
   })
 
-  // eslint-disable-next-line no-unused-vars
-  let success = false
-
   clipboard.on('success', e => {
-    success = true
     if (process.env.NODE_ENV === 'development') {
     }
     message.success($t('custom.grouping_details.operationSuccess'))

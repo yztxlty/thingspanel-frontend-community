@@ -57,7 +57,7 @@ export interface RequestOption<ResponseData = any> {
 interface ResponseMap {
   blob: Blob
   text: string
-  arrayBuffer: ArrayBuffer
+  arraybuffer: ArrayBuffer
   stream: ReadableStream<Uint8Array>
   document: Document
 }

@@ -3,7 +3,7 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
-import { delServiceAccess, getServiceAccess } from '@/service/api/plugin.ts'
+import { delServiceAccess, getServiceAccess } from '@/service/api/plugin'
 import { $t } from '@/locales'
 import { formatDateTime } from '@/utils/common/datetime'
 import serviceModal from './components/serviceModal.vue'
@@ -83,7 +83,7 @@ const columns: any = ref([
     },
     render: row => {
       return (
-        <NSpace justify={'left'}>
+        <NSpace justify={'start'}>
           {
             <NButton size={'small'} type="primary" onClick={() => see(row)}>
               {$t('card.viewDevice')}

@@ -1,7 +1,7 @@
 <script lang="tsx" setup>
-import type { VueElement } from 'vue'
-import { computed, defineProps, ref, watch, watchEffect, onMounted, onUnmounted } from 'vue'
-import _ from 'lodash-es'
+import type { VueElement, VNode } from 'vue'
+import { computed, defineProps, ref, watchEffect, onMounted, onUnmounted } from 'vue'
+import * as _ from 'lodash-es'
 import { NButton, NDataTable, NDatePicker, NInput, NSelect, NSpace, NPagination, NSpin } from 'naive-ui'
 import type { TreeSelectOption } from 'naive-ui'
 import { useLoading } from '@sa/hooks'
@@ -81,7 +81,7 @@ export type SearchConfig =
 
 // 通过props从父组件接收参数
 const props = defineProps<{
-  fetchData: () => Promise<any> // 数据获取函数
+  fetchData: (params: Record<string, unknown>) => Promise<any> // 数据获取函数
   columnsToShow: // 表格列配置
   | {
         key: string
@@ -96,8 +96,8 @@ const props = defineProps<{
     label: theLabel // 按钮文本
     callback: any // 点击回调
   }>
-  topActions: { element: () => JSX.Element }[] // 顶部操作组件列表
-  rowClick?: () => void // 表格行点击回调
+  topActions: { element: () => VNode }[] // 顶部操作组件列表
+  rowClick?: (row: DeviceItem) => void // 表格行点击回调
   initPage?: number
   initPageSize?: number
 }>()
@@ -512,7 +512,7 @@ const formSize = ref(undefined)
       <n-scrollbar style="height: calc(100vh - 442px)" :size="1">
         <n-spin :show="loading">
           <NGrid x-gap="20px" y-gap="20px" cols="1 s:2 m:3 l:4" responsive="screen">
-            <NGridItem v-for="(item, index) in dataList" :key="item.id">
+            <NGridItem v-for="item in dataList" :key="item.id">
               <DevCardItem
                 :title="item.name || 'N/A'"
                 :status-active="item.is_online === 1"

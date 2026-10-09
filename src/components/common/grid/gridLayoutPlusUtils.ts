@@ -2,13 +2,7 @@
  * Grid Layout Plus 工具函数
  */
 
-import type {
-  GridLayoutPlusItem,
-  GridLayoutPlusConfig,
-  LayoutOperationResult,
-  ResponsiveLayout,
-  PerformanceConfig
-} from './gridLayoutPlusTypes'
+import type { GridLayoutPlusItem, LayoutOperationResult, ResponsiveLayout, PerformanceConfig } from './gridLayoutPlusTypes'
 
 /**
  * 验证网格项
@@ -391,7 +385,7 @@ export function optimizeLayoutPerformance(
   }
 
   // 如果项目数量超过虚拟化阈值，启用虚拟化优化
-  if (config.enableVirtualization && layout.length > config.virtualizationThreshold) {
+  if (config.enableVirtualization && layout.length > (config.virtualizationThreshold ?? Infinity)) {
     // 虚拟化逻辑
   }
 
@@ -403,7 +397,7 @@ export function optimizeLayoutPerformance(
  */
 export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout
-  return (...args: Parameters<T>) => {
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
     clearTimeout(timeoutId)
     timeoutId = setTimeout(() => func.apply(this, args), delay)
   }
@@ -414,7 +408,7 @@ export function debounce<T extends (...args: any[]) => any>(func: T, delay: numb
  */
 export function throttle<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let lastCall = 0
-  return (...args: Parameters<T>) => {
+  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
     const now = Date.now()
     if (now - lastCall >= delay) {
       lastCall = now

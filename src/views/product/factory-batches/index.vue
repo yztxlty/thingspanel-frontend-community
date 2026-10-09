@@ -18,6 +18,15 @@ type Unit = {
 };
 type StationGrant = { grantId: number; stationId: string; expiresAt: number; revokedAt: number | null };
 
+function factoryError(cause: unknown, fallback: string): string {
+  if (cause instanceof Error) return cause.message;
+  if (cause && typeof cause === 'object' && 'error' in cause) {
+    const detail = cause.error;
+    if (detail && typeof detail === 'object' && 'message' in detail && typeof detail.message === 'string') return detail.message;
+  }
+  return fallback;
+}
+
 const route = useRoute();
 const router = useRouter();
 const productKey = computed(() => String(route.query.productKey || ''));
@@ -92,7 +101,7 @@ async function checkConnection() {
     if (requestError || !data) throw new Error(requestError?.response?.data?.message || '地址检查失败');
     if (attempt === previewAttempt && createOpen.value && createForm.apiBase === base && productKey.value === product) connectionPreview.value = data;
   } catch (cause) {
-    if (attempt === previewAttempt && createForm.apiBase === base) connectionError.value = cause instanceof Error ? cause.message : '地址检查失败';
+    if (attempt === previewAttempt && createForm.apiBase === base) connectionError.value = factoryError(cause, '地址检查失败');
   } finally { if (attempt === previewAttempt) checking.value = false; }
 }
 async function refreshDirectory() {
@@ -107,7 +116,7 @@ async function refreshDirectory() {
     if (requestError || !data) throw new Error(requestError?.response?.data?.message || '当前目录检查失败');
     if (selected.value === batch) currentDirectory.value = data;
   } catch (cause) {
-    if (selected.value === batch) currentError.value = cause instanceof Error ? cause.message : '当前目录检查失败';
+    if (selected.value === batch) currentError.value = factoryError(cause, '当前目录检查失败');
   } finally { checkingCurrent.value = false; }
 }
 function copyConfiguration() {
@@ -162,7 +171,7 @@ async function loadBatches() {
     selected.value = '';
     units.value = [];
     stationGrants.value = [];
-    error.value = cause instanceof Error ? cause.message : '批次加载失败';
+    error.value = factoryError(cause, '批次加载失败');
   } finally {
     loading.value = false;
   }
@@ -185,7 +194,7 @@ async function loadDetail() {
     if (selected.value !== requestedBatch) return;
     units.value = [];
     stationGrants.value = [];
-    window.$message?.error(cause instanceof Error ? cause.message : '设备明细加载失败');
+    window.$message?.error(factoryError(cause, '设备明细加载失败'));
   } finally {
     if (selected.value === requestedBatch) detailLoading.value = false;
   }
@@ -226,7 +235,7 @@ async function createBatch() {
     window.$message?.success('批次已预登记');
     await loadBatches();
   } catch (cause) {
-    window.$message?.error(cause instanceof Error ? cause.message : '创建失败');
+    window.$message?.error(factoryError(cause, '创建失败'));
   } finally {
     creating.value = false;
   }
@@ -240,7 +249,7 @@ async function changeStatus(batch: Batch, status: 'READY' | 'PAUSED' | 'CLOSED')
     if (requestError) throw new Error('批次状态更新失败');
     await loadBatches();
   } catch (cause) {
-    window.$message?.error(cause instanceof Error ? cause.message : '批次状态更新失败');
+    window.$message?.error(factoryError(cause, '批次状态更新失败'));
   } finally {
     changing.value = '';
   }
@@ -263,7 +272,7 @@ async function grantStation() {
     grantToken.value = data.token;
     await loadDetail();
   } catch (cause) {
-    window.$message?.error(cause instanceof Error ? cause.message : '工位授权签发失败');
+    window.$message?.error(factoryError(cause, '工位授权签发失败'));
   } finally {
     granting.value = false;
   }
@@ -302,7 +311,7 @@ async function restoreCurrentUnit() {
     window.$message?.success('原设备领取窗口已恢复；请核对工位授权期限后继续原请求');
     await loadDetail();
   } catch (cause) {
-    window.$message?.error(cause instanceof Error ? cause.message : '恢复失败');
+    window.$message?.error(factoryError(cause, '恢复失败'));
   } finally {
     restoring.value = false;
   }
@@ -317,7 +326,7 @@ async function revokeStation(grantId: number) {
     await loadDetail();
     window.$message?.success('工位授权已撤销');
   } catch (cause) {
-    window.$message?.error(cause instanceof Error ? cause.message : '撤销工位授权失败');
+    window.$message?.error(factoryError(cause, '撤销工位授权失败'));
   } finally {
     revoking.value = 0;
   }
@@ -346,7 +355,7 @@ async function enableUnit(unit: Unit) {
     window.$message?.success('身份已启用；设备首次联网后才会激活');
     await Promise.all([loadBatches(), loadDetail()]);
   } catch (cause) {
-    window.$message?.error(cause instanceof Error ? cause.message : '启用失败');
+    window.$message?.error(factoryError(cause, '启用失败'));
   } finally {
     enabling.value = '';
   }

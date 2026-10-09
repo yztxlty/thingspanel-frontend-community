@@ -56,25 +56,7 @@ const emit = defineEmits<{
 
 // ========== Composable ==========
 
-const {
-  isLoading,
-  bindings,
-  error,
-  boundCount,
-  unboundCount,
-  skippedCount,
-  hasRequiredUnbound,
-  canProceed,
-  bindingSummary,
-  loadAllCompatibleDevices,
-  selectDevice,
-  skipBinding,
-  unskipBinding,
-  validateBindings,
-  generateBindingsRequest,
-  initializeBindings,
-  reset
-} = useDeviceBinding()
+const { isLoading, bindings, boundCount, unboundCount, skippedCount, hasRequiredUnbound, canProceed, loadAllCompatibleDevices, selectDevice, skipBinding, unskipBinding, validateBindings, generateBindingsRequest, initializeBindings, reset } = useDeviceBinding()
 
 // ========== Local State ==========
 
@@ -96,9 +78,6 @@ const expandedDashboards = ref<string[]>([])
 const isInitialized = ref(false)
 
 // ========== Computed ==========
-
-/** 所有必填项是否已绑定 */
-const allRequiredBound = computed(() => !hasRequiredUnbound.value)
 
 /** 绑定进度 */
 const bindingProgress = computed(() => {
@@ -259,37 +238,6 @@ function getDeviceStatusType(online: boolean): 'success' | 'default' {
  */
 function getDeviceStatusText(online: boolean): string {
   return online ? $t('device.online') : $t('device.offline')
-}
-
-/**
- * 获取设备选择选项
- */
-function getDeviceOptions(binding: DeviceBinding) {
-  const devices = getFilteredDevices(binding)
-  return devices.map(device => ({
-    label: device.name,
-    value: device.id,
-    disabled: false
-  }))
-}
-
-/**
- * 获取绑定状态图标
- */
-function getBindingStatusIcon(binding: DeviceBinding): string {
-  if (binding.skipped) return 'skip'
-  if (binding.selectedDeviceId) return 'bound'
-  return 'unbound'
-}
-
-/**
- * 获取绑定状态颜色
- */
-function getBindingStatusColor(binding: DeviceBinding): string {
-  if (binding.skipped) return 'warning'
-  if (binding.selectedDeviceId) return 'success'
-  if (binding.required) return 'error'
-  return 'default'
 }
 
 // ========== Expose ==========

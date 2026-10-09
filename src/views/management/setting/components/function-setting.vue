@@ -6,14 +6,14 @@ const queryParam = reactive({
   function_id: ''
 })
 
-const changeFunc = async (item: object) => {
+const changeFunc = async (item: { id: string }) => {
   queryParam.function_id = item.id
   const res = await editFunction(queryParam)
   if (!res.error) {
     getFunctionOption()
   }
 }
-const funcOptions = ref([])
+const funcOptions = ref<{ id: string; description: string; value: boolean }[]>([])
 async function getFunctionOption() {
   const { data } = await getFunction()
   if (data) {

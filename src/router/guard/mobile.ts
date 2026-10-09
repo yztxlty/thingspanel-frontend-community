@@ -1,4 +1,4 @@
-import type { NavigationGuardNext, RouteLocationNormalized, Router } from 'vue-router'
+import type { RouteLocationNormalized, Router } from 'vue-router'
 import { useAppStore } from '@/store/modules/app'
 
 /**
@@ -11,11 +11,8 @@ export function createMobileLayoutGuard(router: Router) {
 
     // 如果是移动设备且当前路由使用的是 base 布局
     if (appStore.isMobile && shouldUseMobileLayout(to)) {
-      // 修改路由配置为移动端布局
-      const mobileRoute = { ...to }
-
       // 将路由组件从 base 布局改为 mobile 布局
-      const routeMatch = router.getRoutes().find(route => route.name === to.name)
+      const routeMatch = to
       if (routeMatch && routeMatch.matched?.[0]) {
         const matched = routeMatch.matched[0]
         // 检查是否使用 base 布局组件

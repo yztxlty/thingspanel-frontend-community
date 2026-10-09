@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import dayjs from 'dayjs'
 import { $t } from '@/locales'
 import { useAppStore } from '@/store/modules/app'
-import { useEcharts } from '@/hooks/chart/use-echarts'
+import { useEcharts, type ECOption } from '@/hooks/chart/use-echarts'
 
 defineOptions({ name: 'TenantGrowthCharts' })
 
@@ -21,12 +21,12 @@ function dateLabels(data: Api.UserManagement.TenantDailyGrowth[]) {
   return data.map(item => dayjs(item.date).format('MM-DD'))
 }
 
-function lineOptions() {
+function lineOptions(): ECOption {
   return {
     tooltip: {
       trigger: 'axis' as const,
-      formatter: (params: any[]) => {
-        const index = params?.[0]?.dataIndex ?? 0
+      formatter: params => {
+        const index = (Array.isArray(params) ? params[0] : params)?.dataIndex ?? 0
         const item = props.trend[index]
         if (!item) return ''
         return [
@@ -59,14 +59,14 @@ function lineOptions() {
   }
 }
 
-function barOptions() {
+function barOptions(): ECOption {
   const data = barTrend.value
   return {
     tooltip: {
       trigger: 'axis' as const,
       axisPointer: { type: 'shadow' as const },
-      formatter: (params: any[]) => {
-        const index = params?.[0]?.dataIndex ?? 0
+      formatter: params => {
+        const index = (Array.isArray(params) ? params[0] : params)?.dataIndex ?? 0
         const item = data[index]
         if (!item) return ''
         return `${item.date}<br/>${$t('page.manage.user.statistics.dailyNew')}: ${item.new_total}`

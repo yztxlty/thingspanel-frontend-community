@@ -85,7 +85,7 @@ export interface CreateProjectData {
 
 export interface UpdateProjectData {
   name?: string
-  description?: string
+  description?: string | null
   thumbnail?: string
 }
 
@@ -107,6 +107,7 @@ export interface ThingsVisDashboard {
   version: number
   canvasConfig: {
     mode: string
+    previewAlignY?: 'top' | 'center' | 'bottom'
     width: number
     height: number
     background: string | Record<string, unknown> | null

@@ -12,3 +12,12 @@ assert.equal(errors.length, 0);
 compileScript(descriptor, { id: 'factory' });
 assert.equal(compileTemplate({ source: descriptor.template.content, filename, id: 'factory' }).errors.length, 0);
 console.log('PASS factory connection UI contract and Vue compilation');
+
+const helper = source.match(/function factoryError[\s\S]*?\n}/)?.[0];
+assert(helper, '必须展示请求封装内的具体错误');
+const { default: ts } = await import('typescript');
+const js = ts.transpile(helper);
+const format = new Function(`${js}; return factoryError;`)();
+assert.equal(format({ error: { message: 'apiBase 必须是 HTTPS 域名' } }, '失败'), 'apiBase 必须是 HTTPS 域名');
+assert.equal(format(new Error('证书验证失败'), '失败'), '证书验证失败');
+assert.equal(format(null, '失败'), '失败');

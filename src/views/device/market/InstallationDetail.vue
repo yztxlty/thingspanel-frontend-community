@@ -8,44 +8,12 @@
  * - 允许更新绑定
  * - 显示关联的设备和看板
  */
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  NCard,
-  NButton,
-  NTag,
-  NAlert,
-  NSpin,
-  NEmpty,
-  NSpace,
-  NGrid,
-  NGi,
-  NIcon,
-  NDescriptions,
-  NDescriptionsItem,
-  NDivider,
-  NTooltip,
-  useMessage
-} from 'naive-ui'
-import {
-  ArrowBackOutline,
-  OpenOutline,
-  RefreshOutline,
-  LinkOutline,
-  AlertCircleOutline,
-  CheckmarkCircleOutline,
-  CloudDownloadOutline
-} from '@vicons/ionicons5'
+import { NCard, NButton, NTag, NAlert, NSpin, NEmpty, NSpace, NGrid, NGi, NIcon, NTooltip, useMessage } from 'naive-ui'
+import { ArrowBackOutline, OpenOutline, RefreshOutline, LinkOutline, AlertCircleOutline, CheckmarkCircleOutline } from '@vicons/ionicons5'
 import { $t } from '@/locales'
-import {
-  getInstallationDetail,
-  updateInstallationBindings,
-  retryInstallation,
-  compensateInstallation,
-  type InstalledBundle,
-  type MarketApiError,
-  getErrorDisplayMessage
-} from '@/service/api/market-bundle'
+import { getInstallationDetail, updateInstallationBindings, retryInstallation, compensateInstallation, type InstalledBundle } from '@/service/api/market-bundle'
 import DeviceBindingWizard from './DeviceBindingWizard.vue'
 import type { BindingDefinition } from './composables/use-device-binding'
 
@@ -182,7 +150,7 @@ async function fetchInstallationDetail(id: string) {
     installation.value = result.data
   } catch (err: any) {
     error.value = err.message || 'Failed to load installation detail'
-    message.error(error.value)
+    message.error(error.value || 'Failed to load installation detail')
   } finally {
     loading.value = false
   }
