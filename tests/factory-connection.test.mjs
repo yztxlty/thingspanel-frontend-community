@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { parse, compileScript, compileTemplate } from '@vue/compiler-sfc';
+const filename = 'src/views/product/factory-batches/index.vue';
+const source = readFileSync(filename, 'utf8');
+assert(source.includes('apiBase'), '创建页面必须配置设备基础地址');
+assert(source.includes('connectionConfirmed'), '必须人工核对后提交');
+assert(source.includes('connectionEvidence'), '设备读回事实必须展示');
+assert(source.includes('connectionPreview.value = null'), '修改地址必须撤销旧检查');
+const { descriptor, errors } = parse(source, { filename });
+assert.equal(errors.length, 0);
+compileScript(descriptor, { id: 'factory' });
+assert.equal(compileTemplate({ source: descriptor.template.content, filename, id: 'factory' }).errors.length, 0);
+console.log('PASS factory connection UI contract and Vue compilation');

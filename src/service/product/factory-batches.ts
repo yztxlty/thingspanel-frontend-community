@@ -15,3 +15,8 @@ export const revokeFactoryStationGrant = (batchId: string, grantId: number): Pro
   request.post(`${base}/${encodeURIComponent(batchId)}/stations/${grantId}/revoke`);
 export const enableFactoryUnit = (batchId: string, deviceId: string): Promise<any> =>
   request.post(`${base}/${encodeURIComponent(batchId)}/units/${encodeURIComponent(deviceId)}/enable`);
+export const restoreFactoryUnit = (batchId: string, deviceId: string, body: Record<string, unknown>): Promise<any> =>
+  request.post(`${base}/${encodeURIComponent(batchId)}/units/${encodeURIComponent(deviceId)}/restore`, body);
+
+export const previewFactoryConnection = (body: Record<string, unknown>): Promise<any> =>
+  request.post('/product/factory-connection-preview', body);
