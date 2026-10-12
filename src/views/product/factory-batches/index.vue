@@ -265,7 +265,7 @@ async function grantStation() {
   grantRequestId.value ||= crypto.randomUUID();
   try {
     const { data, error: requestError } = await issueFactoryStationGrant(selected.value, {
-      stationId: grantForm.stationId, durationSeconds: 86400,
+      stationId: grantForm.stationId, durationSeconds: 604800,
       requestId: grantRequestId.value
     });
     if (requestError || !data?.token) throw new Error('签发状态未确认；请刷新授权列表核对，必要时撤销后重签');
@@ -489,7 +489,7 @@ onMounted(loadBatches);
       <p>授权批次：{{ selected }}</p>
       <template v-if="!grantToken"><n-form label-placement="left" label-width="110">
         <n-form-item label="工位编号"><n-input v-model:value="grantForm.stationId" placeholder="例如 station-001（仅英文字母、数字及 ._:-）" /></n-form-item>
-        <n-form-item label="有效期">测试工位 24 小时（由服务端计时）</n-form-item>
+        <n-form-item label="有效期">工位 168 小时（7 × 24 小时，由服务端计时）</n-form-item>
       </n-form><n-alert type="warning">令牌只在签发成功时展示一次；请通过受控渠道交给对应工位。</n-alert></template>
       <template v-else><n-alert type="success">工位令牌已签发，仅本次可见。关闭后无法在后台重新查看。</n-alert><pre class="factory-token">{{ grantToken }}</pre></template>
       <template #footer><n-space justify="end"><n-button :disabled="granting" @click="closeGrant">关闭</n-button><n-button v-if="!grantToken" type="primary" :loading="granting" @click="grantStation">签发授权</n-button></n-space></template>

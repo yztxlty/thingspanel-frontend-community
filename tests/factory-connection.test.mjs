@@ -21,3 +21,6 @@ const format = new Function(`${js}; return factoryError;`)();
 assert.equal(format({ error: { message: 'apiBase 必须是 HTTPS 域名' } }, '失败'), 'apiBase 必须是 HTTPS 域名');
 assert.equal(format(new Error('证书验证失败'), '失败'), '证书验证失败');
 assert.equal(format(null, '失败'), '失败');
+
+assert(source.includes('durationSeconds: 604800'), '工位授权必须请求168小时');
+assert(source.includes('168 小时'), '界面必须说明168小时有效期');
