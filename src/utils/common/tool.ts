@@ -3,7 +3,7 @@ import { STATIC_BASE_URL } from '@/constants/common'
 import { $t } from '@/locales'
 import { message } from './discrete'
 import { createServiceConfig } from '~/env.config'
-import { rsaPublicKey } from '@/config/security/rsa'
+import { getRSAPublicKey } from '@/config/security/rsa'
 
 export function typeOf(obj: any): any {
   const toString: any = Object.prototype.toString
@@ -140,7 +140,7 @@ export function generateRandomHexString(length) {
 
 // RSA 公钥加密
 export function encryptDataByRsa(data): string {
-  const pubKey = rsaPublicKey
+  const pubKey = getRSAPublicKey()
   const encrypt = new JSEncrypt()
   encrypt.setPublicKey(pubKey)
   // 使用公钥进行加密
