@@ -151,7 +151,10 @@ export class ThingsVisAuthService {
 
       // 3. 调用 ThingsVis SSO API (通过代理)
       // /thingsvis-api/auth/sso -> ${VITE_THINGSVIS_API_URL}/api/v1/auth/sso
-      const ssoUrl = `${this.thingsvisApiUrl}/auth/sso`
+      const secureSSO = import.meta.env.VITE_THINGSVIS_SECURE_SSO === 'Y'
+      const ssoUrl = secureSSO
+        ? `${import.meta.env.VITE_BASE_URL || '/'}api/v1/thingsvis/auth/sso`
+        : `${this.thingsvisApiUrl}/auth/sso`
       console.log('[SSO] 📡 调用 SSO API:', ssoUrl)
       console.log('[SSO] 请求目标:', this.thingsvisApiTarget)
       console.log('[SSO] 请求数据:', {
@@ -163,7 +166,8 @@ export class ThingsVisAuthService {
       const response = await fetch(ssoUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(secureSSO ? { 'x-token': tpToken } : {})
         },
         body: JSON.stringify(request)
       })
